@@ -1,0 +1,134 @@
+
+#root {
+  max-width: 100%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+/* Healthcare App Styles */
+.sidebar-item {
+  @apply flex items-center gap-3 px-4 py-2.5 rounded-lg text-gray-600 transition-colors duration-200 hover:bg-healthcare-light hover:text-healthcare-primary;
+}
+
+.sidebar-item.active {
+  @apply bg-healthcare-light text-healthcare-primary font-medium;
+}
+
+.section-heading {
+  @apply text-healthcare-text font-semibold mb-6;
+}
+
+.doctor-card {
+  @apply relative bg-white rounded-xl shadow-card hover:shadow-hover transition-all duration-300;
+}
+
+.doctor-avatar {
+  @apply relative w-20 h-20 rounded-full overflow-hidden mx-auto mb-4 transition-transform duration-300;
+}
+
+.specialty-card {
+  @apply relative bg-white rounded-xl shadow-card hover:shadow-hover transition-all duration-300;
+}
+
+.favorite-button {
+  @apply absolute top-3 right-3 p-2 rounded-full hover:bg-gray-100 transition-colors duration-200;
+}
+
+.price-tag {
+  @apply text-lg font-semibold text-healthcare-primary;
+}
+
+.rating {
+  @apply flex items-center gap-1 text-yellow-500;
+}
+
+/* Main content wrapper to account for sidebar */
+.main-content {
+  @apply flex min-h-screen;
+}
+
+.content-area {
+  @apply flex-1 p-6;
+}
+
+/* Landing page specific styles */
+.service-card {
+  @apply rounded-lg p-4 flex flex-col hover:shadow-md transition-shadow;
+}
+
+.service-card-icon {
+  @apply h-6 w-6 text-healthcare-primary;
+}
+
+.category-link {
+  @apply bg-white rounded-lg p-4 flex flex-col items-center justify-center hover:shadow-md transition-shadow text-center;
+}
+
+/* Symptoms and Diseases styles */
+.symptom-icon, .disease-icon {
+  @apply flex items-center justify-center;
+  font-size: 1.5rem;
+}
+
+/* Responsive utilities */
+@media (max-width: 640px) {
+  .page-container {
+    @apply px-2;
+  }
+  
+  .section-heading {
+    @apply text-xl mb-4;
+  }
+  
+  .content-area {
+    @apply p-4 w-full;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1023px) {
+  .page-container {
+    @apply px-4;
+  }
+}
+
+@media (min-width: 1024px) {
+  .page-container {
+    @apply px-6;
+  }
+}
