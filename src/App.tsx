@@ -33,6 +33,10 @@ import AdminAppointmentDetail from './pages/admin/AdminAppointmentDetail';
 import AdminPatients from './pages/admin/AdminPatients';
 import AdminDoctors from './pages/admin/AdminDoctors';
 import AdminVerifyDoctors from './pages/admin/AdminVerifyDoctors';
+import DoctorSettings from './pages/doctor/settings';
+import DoctorPrescriptions from './pages/doctor/prescriptions';
+//import PrescriptionDetail from './pages/doctor/PrescriptionDetail';
+//import NewPrescription from './pages/doctor/NewPrescription';
 
 const App = () => {
   const [queryClient] = useState(() => new QueryClient());
@@ -67,8 +71,10 @@ const App = () => {
               <Route path="/doctor/patients" element={<DoctorPatients />} />
               <Route path="/doctor/patient/:id" element={<PatientProfile />} />
               <Route path="/doctor/availability" element={<DoctorAvailability />} />
-              <Route path="/doctor/prescriptions" element={<Prescriptions />} />
+              <Route path="/doctor/prescriptions" element={<DoctorPrescriptions />} />
+              
               <Route path="/doctor/chat" element={<Chat />} />
+              <Route path="/doctor/settings" element={<DoctorSettings />} />
               
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
               <Route path="/admin/appointment-list" element={<AdminAppointmentList />} />

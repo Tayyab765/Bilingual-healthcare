@@ -208,7 +208,7 @@ const Chat = () => {
       <div className="flex-1">
         <Header />
         
-        <main className="p-0 lg:ml-64">
+        <main className="p-0 lg:ml-0">
           <div className="flex h-[calc(100vh-64px)]">
             {isMobile && (
               <button 

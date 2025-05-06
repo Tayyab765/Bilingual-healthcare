@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, Calendar, Phone, Mail, ChevronRight, Search } from 'lucide-react';
@@ -66,7 +65,6 @@ const DoctorPatients = () => {
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    // Check if logged in as doctor
     const isDoctor = localStorage.getItem('isDoctor') === 'true';
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
     
@@ -101,8 +99,8 @@ const DoctorPatients = () => {
         <Header />
         
         {/* Main content */}
-        <main className="flex-1 overflow-y-auto p-6 lg:ml-64">
-          <Card>
+        <main className="flex-1 overflow-y-auto p-6 lg:ml-0">
+          <Card className="space-y-6">
             <CardHeader>
               <div className="flex justify-between items-center">
                 <div>
@@ -121,7 +119,7 @@ const DoctorPatients = () => {
               </div>
             </CardHeader>
             <CardContent>
-              <Table>
+              <Table className="space-y-4">
                 <TableHeader>
                   <TableRow>
                     <TableHead>Patient</TableHead>

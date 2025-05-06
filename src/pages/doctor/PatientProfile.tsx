@@ -164,12 +164,12 @@ const PatientProfile = () => {
   };
 
   if (!patient) {
-    return (
+    return (      
       <div className="flex min-h-screen bg-gray-50">
         <Sidebar />
         <div className="flex-1">
           <Header />
-          <main className="p-4 md:p-6 lg:ml-64">
+          <main className="p-6 lg:ml-0">
             <div className="flex items-center space-x-2 mb-6">
               <Button variant="ghost" size="sm" onClick={handleBackClick}>
                 <ArrowLeft className="mr-2 h-4 w-4" />
@@ -190,7 +190,7 @@ const PatientProfile = () => {
       <Sidebar />
       <div className="flex-1">
         <Header />
-        <main className="p-4 md:p-6 lg:ml-64">
+        <main className="p-6 lg:ml-0">
           <div className="flex items-center space-x-2 mb-6">
             <Button variant="ghost" size="sm" onClick={handleBackClick}>
               <ArrowLeft className="mr-2 h-4 w-4" />
@@ -198,23 +198,22 @@ const PatientProfile = () => {
             </Button>
           </div>
           
-          <Card className="mb-6">
+          {/* Patient Overview */}
+          <Card className="mb-6 p-6">
             <CardHeader>
               <CardTitle>Patient Overview</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <div className="flex items-start space-x-4">
-                    <div className="h-16 w-16 rounded-full bg-gray-200 flex items-center justify-center">
-                      <User className="h-8 w-8 text-gray-500" />
-                    </div>
-                    <div>
-                      <h2 className="text-2xl font-bold">{patient.name}</h2>
-                      <div className="flex items-center text-gray-500 mt-1">
-                        <Calendar className="h-4 w-4 mr-2" />
-                        <span>{patient.dateOfBirth} ({new Date().getFullYear() - new Date(patient.dateOfBirth.split(', ')[1] || patient.dateOfBirth.split(' ')[2]).getFullYear()} years)</span>
-                      </div>
+                <div className="flex items-start space-x-4">
+                  <div className="h-16 w-16 rounded-full bg-gray-200 flex items-center justify-center">
+                    <User className="h-8 w-8 text-gray-500" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold">{patient.name}</h2>
+                    <div className="flex items-center text-gray-500 mt-1">
+                      <Calendar className="h-4 w-4 mr-2" />
+                      <span>{patient.dateOfBirth}</span>
                     </div>
                   </div>
                 </div>
@@ -235,7 +234,7 @@ const PatientProfile = () => {
                 </div>
               </div>
               
-              <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="bg-blue-50 rounded-lg p-4">
                   <div className="flex items-center justify-between">
                     <div className="text-blue-700 font-medium">Last Visit</div>
@@ -261,52 +260,53 @@ const PatientProfile = () => {
             </CardContent>
           </Card>
           
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Activity className="mr-2 h-5 w-5 text-red-500" />
-                  Allergies
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {patient.allergies.length > 0 ? (
-                  <ul className="list-disc pl-5 space-y-1">
-                    {patient.allergies.map((allergy: string, index: number) => (
-                      <li key={index} className="text-red-600">{allergy}</li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="text-gray-500">No known allergies</p>
-                )}
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Clock className="mr-2 h-5 w-5 text-blue-500" />
-                  Upcoming Appointments
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {patient.upcomingAppointments.length > 0 ? (
-                  <ul className="space-y-3">
-                    {patient.upcomingAppointments.map((appointment: any, index: number) => (
-                      <li key={index} className="bg-blue-50 p-3 rounded-md">
-                        <div className="font-medium">{appointment.date}, {appointment.time}</div>
-                        <div className="text-sm text-gray-600">Reason: {appointment.reason}</div>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="text-gray-500">No upcoming appointments</p>
-                )}
-              </CardContent>
-            </Card>
-          </div>
+          {/* Allergies */}
+          <Card className="mb-6 p-6">
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Activity className="mr-2 h-5 w-5 text-red-500" />
+                Allergies
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {patient.allergies.length > 0 ? (
+                <ul className="list-disc pl-5 space-y-1">
+                  {patient.allergies.map((allergy: string, index: number) => (
+                    <li key={index} className="text-red-600">{allergy}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-gray-500">No known allergies</p>
+              )}
+            </CardContent>
+          </Card>
           
-          <Card className="mb-6">
+          {/* Upcoming Appointments */}
+          <Card className="mb-6 p-6">
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Clock className="mr-2 h-5 w-5 text-blue-500" />
+                Upcoming Appointments
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {patient.upcomingAppointments.length > 0 ? (
+                <ul className="space-y-3">
+                  {patient.upcomingAppointments.map((appointment: any, index: number) => (
+                    <li key={index} className="bg-blue-50 p-3 rounded-md">
+                      <div className="font-medium">{appointment.date}, {appointment.time}</div>
+                      <div className="text-sm text-gray-600">Reason: {appointment.reason}</div>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-gray-500">No upcoming appointments</p>
+              )}
+            </CardContent>
+          </Card>
+          
+          {/* Medical History */}
+          <Card className="mb-6 p-6">
             <CardHeader>
               <CardTitle>Medical History</CardTitle>
             </CardHeader>
@@ -332,7 +332,8 @@ const PatientProfile = () => {
             </CardContent>
           </Card>
           
-          <Card>
+          {/* Prescriptions */}
+          <Card className="mb-6 p-6">
             <CardHeader>
               <CardTitle>Current Prescriptions</CardTitle>
             </CardHeader>

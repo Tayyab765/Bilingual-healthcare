@@ -1,9 +1,8 @@
-
 import React, { useState, useEffect } from 'react';
 import { FileText, Home, MessageSquare, Settings, User, ListChecks, X, Menu, LogOut, History, Users, Clock } from 'lucide-react';
 import Logo from './Logo';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const Sidebar = () => {
   const isMobile = useIsMobile();
@@ -12,20 +11,16 @@ const Sidebar = () => {
   const [isDoctor, setIsDoctor] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    setIsOpen(!isMobile);
-  }, [isMobile]);
-
-  useEffect(() => {
-    // Check if user is logged in and what type of user they are
     const loggedIn = localStorage.getItem('isLoggedIn') === 'true';
-    const doctorLoggedIn = localStorage.getItem('isDoctor') === 'true';
-    const adminLoggedIn = localStorage.getItem('isAdmin') === 'true';
+    const doctor = localStorage.getItem('isDoctor') === 'true';
+    const admin = localStorage.getItem('isAdmin') === 'true';
     
     setIsLoggedIn(loggedIn);
-    setIsDoctor(doctorLoggedIn);
-    setIsAdmin(adminLoggedIn);
+    setIsDoctor(doctor);
+    setIsAdmin(admin);
   }, []);
 
   const toggleSidebar = () => {
@@ -39,6 +34,11 @@ const Sidebar = () => {
     localStorage.removeItem('userEmail');
     localStorage.removeItem('userName');
     window.location.href = '/';
+  };
+
+  // We'll keep this function for programmatic navigation
+  const handleSettingsClick = () => {
+    navigate('/doctor/settings');
   };
 
   // Close sidebar on mobile when navigating
