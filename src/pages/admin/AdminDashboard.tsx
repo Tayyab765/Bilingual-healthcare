@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Calendar, Users, PieChart, BarChart, LineChart } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
@@ -59,7 +58,7 @@ const AdminDashboard = () => {
     <div className="flex h-screen bg-gray-50">
       <AdminSidebar />
       
-      <div className="flex flex-col flex-1 overflow-hidden">
+      <div className="flex-1 overflow-hidden pl-64">
         <div className="bg-white shadow-sm z-10 p-4">
           <h1 className="text-2xl font-semibold text-gray-800">Dashboard</h1>
         </div>

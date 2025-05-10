@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { 
   Card, 
@@ -16,7 +15,7 @@ const Settings = () => {
   return (
     <div className="flex min-h-screen bg-background">
       <Sidebar />
-      <div className="flex-1 w-full pl-0 md:pl-64">
+      <div className="flex-1 w-full">
         <div className="container max-w-4xl mx-auto py-8 px-4">
           <h1 className="text-3xl font-bold mb-6">Settings</h1>
           

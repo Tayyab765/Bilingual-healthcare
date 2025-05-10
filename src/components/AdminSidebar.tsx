@@ -3,13 +3,12 @@ import {
   LayoutDashboard, 
   ListChecks, 
   Users, 
-  User, 
+  UserCheck, 
   BarChart, 
   Settings,
   Menu, 
   X,
-  LogOut,
-  UserCheck
+  LogOut
 } from 'lucide-react';
 import Logo from './Logo';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -38,119 +37,128 @@ const AdminSidebar = () => {
   const handleLogout = () => {
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('isDoctor');
-    localStorage.removeItem('userEmail');
-    localStorage.removeItem('userName');
-    window.location.href = '/';
   };
 
-  // Close sidebar on mobile when navigating
-  useEffect(() => {
-    if (isMobile) {
-      setIsOpen(false);
-    }
-  }, [location.pathname, isMobile]);
-
-  if (!isLoggedIn) {
-    return null;
-  }
-
-  // Admin sidebar menu items (updated)
-  const menuItems = [
-    {
-      to: "/admin/dashboard",
-      icon: <LayoutDashboard size={18} />,
-      text: "Dashboard",
-      active: location.pathname === '/admin/dashboard'
-    },
-    {
-      to: "/admin/appointment-list",
-      icon: <ListChecks size={18} />,
-      text: "Appointment List",
-      active: location.pathname === '/admin/appointment-list'
-    },
-    {
-      to: "/admin/patients",
-      icon: <Users size={18} />,
-      text: "Patients",
-      active: location.pathname === '/admin/patients'
-    },
-    {
-      to: "/admin/doctors",
-      icon: <User size={18} />,
-      text: "Doctors",
-      active: location.pathname === '/admin/doctors'
-    },
-    {
-      to: "/admin/verify-doctors",
-      icon: <UserCheck size={18} />,
-      text: "Verify Doctors",
-      active: location.pathname === '/admin/verify-doctors'
-    },
-    {
-      to: "/admin/analytics",
-      icon: <BarChart size={18} />,
-      text: "Analytics",
-      active: location.pathname === '/admin/analytics'
-    },
-    {
-      to: "/admin/settings",
-      icon: <Settings size={18} />,
-      text: "Settings",
-      active: location.pathname === '/admin/settings'
-    }
-  ];
 
   return (
     <>
+      {/* Mobile toggle button */}
       {isMobile && (
         <button 
-          onClick={toggleSidebar}
-          className="fixed left-4 top-4 z-30 bg-healthcare-primary text-white p-2 rounded-full shadow-md"
+          onClick={toggleSidebar} 
+          className="fixed bottom-4 right-4 z-50 bg-healthcare-primary text-white p-3 rounded-full shadow-lg"
         >
-          {isOpen ? <X size={20} /> : <Menu size={20} />}
+          {isOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       )}
-      
-      <aside className={`w-64 h-screen border-r border-gray-100 py-6 fixed left-0 top-0 bg-white z-20 transition-all duration-300 animate-fade-in ${isMobile ? (isOpen ? 'translate-x-0' : '-translate-x-full') : 'translate-x-0'}`}>
-        <div className="px-6 mb-8">
-          <Logo />
+    
+      <div className="bg-white border-r shadow-sm h-screen fixed top-0 left-0 z-40 w-64">
+        <div className="flex flex-col h-full">
+          {/* Sidebar header with logo */}
+          <div className="p-4 flex items-center justify-between">
+            <div className={`flex items-center ${!isOpen && 'md:justify-center'}`}>
+              <Link to="/admin" className="flex items-center">
+                <Logo />
+                {isOpen && <span className="ml-2 font-semibold text-xl">Admin</span>}
+              </Link>
+            </div>
+            {!isMobile && isOpen && (
+              <button onClick={toggleSidebar} className="text-gray-500 hover:text-gray-700">
+                <X size={20} />
+              </button>
+            )}
+          </div>
+          
+          {/* Navigation links */}
+          <div className="flex-1 overflow-y-auto py-4 px-3">
+            <nav className="space-y-1">
+              <Link 
+                to="/admin" 
+                className={`flex items-center px-3 py-2 rounded-md ${
+                  location.pathname === '/admin' 
+                    ? 'bg-healthcare-light text-healthcare-primary' 
+                    : 'text-gray-700 hover:bg-gray-100'
+                } ${!isOpen && 'md:justify-center'}`}
+              >
+                <LayoutDashboard className={`h-5 w-5 ${isOpen ? 'mr-3' : ''}`} />
+                {isOpen && <span>Dashboard</span>}
+              </Link>
+              
+              <Link 
+                to="/admin/appointments" 
+                className={`flex items-center px-3 py-2 rounded-md ${
+                  location.pathname === '/admin/appointments' 
+                    ? 'bg-healthcare-light text-healthcare-primary' 
+                    : 'text-gray-700 hover:bg-gray-100'
+                } ${!isOpen && 'md:justify-center'}`}
+              >
+                <ListChecks className={`h-5 w-5 ${isOpen ? 'mr-3' : ''}`} />
+                {isOpen && <span>Appointments</span>}
+              </Link>
+              
+              <Link 
+                to="/admin/patients" 
+                className={`flex items-center px-3 py-2 rounded-md ${
+                  location.pathname === '/admin/patients' 
+                    ? 'bg-healthcare-light text-healthcare-primary' 
+                    : 'text-gray-700 hover:bg-gray-100'
+                } ${!isOpen && 'md:justify-center'}`}
+              >
+                <Users className={`h-5 w-5 ${isOpen ? 'mr-3' : ''}`} />
+                {isOpen && <span>Patients</span>}
+              </Link>
+              
+              <Link 
+                to="/admin/doctors" 
+                className={`flex items-center px-3 py-2 rounded-md ${
+                  location.pathname === '/admin/doctors' 
+                    ? 'bg-healthcare-light text-healthcare-primary' 
+                    : 'text-gray-700 hover:bg-gray-100'
+                } ${!isOpen && 'md:justify-center'}`}
+              >
+                <UserCheck className={`h-5 w-5 ${isOpen ? 'mr-3' : ''}`} />
+                {isOpen && <span>Doctors</span>}
+              </Link>
+              
+              <Link 
+                to="/admin/analytics" 
+                className={`flex items-center px-3 py-2 rounded-md ${
+                  location.pathname === '/admin/analytics' 
+                    ? 'bg-healthcare-light text-healthcare-primary' 
+                    : 'text-gray-700 hover:bg-gray-100'
+                } ${!isOpen && 'md:justify-center'}`}
+              >
+                <BarChart className={`h-5 w-5 ${isOpen ? 'mr-3' : ''}`} />
+                {isOpen && <span>Analytics</span>}
+              </Link>
+              
+              <Link 
+                to="/admin/settings" 
+                className={`flex items-center px-3 py-2 rounded-md ${
+                  location.pathname === '/admin/settings' 
+                    ? 'bg-healthcare-light text-healthcare-primary' 
+                    : 'text-gray-700 hover:bg-gray-100'
+                } ${!isOpen && 'md:justify-center'}`}
+              >
+                <Settings className={`h-5 w-5 ${isOpen ? 'mr-3' : ''}`} />
+                {isOpen && <span>Settings</span>}
+              </Link>
+            </nav>
+          </div>
+          
+          {/* Logout */}
+          <div className="p-4 border-t">
+            <Link 
+              to="/login" 
+              onClick={handleLogout}
+              className={`flex items-center px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100 ${!isOpen && 'md:justify-center'}`}
+            >
+              <LogOut className={`h-5 w-5 ${isOpen ? 'mr-3' : ''}`} />
+              {isOpen && <span>Logout</span>}
+            </Link>
+          </div>
         </div>
-        
-        <nav className="px-3">
-          <ul className="space-y-1">
-            {menuItems.map((item, index) => (
-              <li key={index}>
-                <Link 
-                  to={item.to} 
-                  className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm ${
-                    item.active 
-                      ? 'bg-green-50 text-green-600 font-medium' 
-                      : 'text-gray-600 hover:bg-gray-100'
-                  }`}
-                >
-                  <div className={`${item.active ? 'text-green-600' : 'text-gray-400'}`}>
-                    {item.icon}
-                  </div>
-                  {item.text}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-
-        <div className="absolute bottom-6 left-0 right-0 px-3">
-          <button 
-            onClick={handleLogout}
-            className="flex items-center gap-3 w-full px-3 py-2 rounded-md text-sm text-red-600 hover:bg-red-50"
-          >
-            <LogOut size={18} className="text-red-500" />
-            <span>Logout</span>
-          </button>
-        </div>
-      </aside>
-
-      {/* Add a spacer div to push content to the right of sidebar on desktop */}
-      <div className={`${isMobile ? 'hidden' : 'block'} w-64 flex-shrink-0`}></div>
+      </div>
     </>
   );
 };

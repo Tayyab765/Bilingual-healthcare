@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Calendar, Clock, User, MapPin, Video, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -95,7 +94,7 @@ const Appointments = () => {
       <div className="flex-1">
         <Header />
         
-        <main className="p-4 md:p-6 lg:ml-64">
+        <main className="p-4 md:p-6">
           <div className="mb-6">
             <h1 className="text-2xl font-bold text-gray-800 mb-2">My Appointments</h1>
             <p className="text-gray-500">Manage your upcoming appointments</p>
