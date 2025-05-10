@@ -1,10 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Calendar, Users, PieChart, BarChart, LineChart } from 'lucide-react';
+import { Calendar, Users, Bell, User, MoreVertical, Settings, LogOut } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import AdminSidebar from '@/components/AdminSidebar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuSeparator, 
+  DropdownMenuTrigger 
+} from '@/components/ui/dropdown-menu';
+import { Badge } from '@/components/ui/badge';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -18,6 +27,31 @@ const AdminDashboard = () => {
   // Toggle between chart and value view
   const [showChartValue, setShowChartValue] = useState(false);
   
+  // Notifications state
+  const [notifications, setNotifications] = useState([
+    {
+      id: 1,
+      title: "New appointment",
+      message: "Dr. Ali has a new appointment",
+      time: "5 min ago",
+      read: false
+    },
+    {
+      id: 2,
+      title: "Payment received",
+      message: "Payment of $150 received from Waleed",
+      time: "1 hour ago",
+      read: false
+    },
+    {
+      id: 3,
+      title: "Doctor verification",
+      message: "Dr. Ahmed submitted verification documents",
+      time: "2 hours ago",
+      read: true
+    }
+  ]);
+
   // Example appointments data
   const appointments = [
     {
@@ -53,14 +87,127 @@ const AdminDashboard = () => {
       status: "Pending"
     }
   ];
+
+  // Handler for marking notifications as read
+  const handleMarkAsRead = () => {
+    setNotifications(notifications.map(n => ({ ...n, read: true })));
+  };
+  
+  // Count unread notifications
+  const unreadCount = notifications.filter(n => !n.read).length;
   
   return (
     <div className="flex h-screen bg-gray-50">
       <AdminSidebar />
       
-      <div className="flex-1 overflow-hidden pl-64">
-        <div className="bg-white shadow-sm z-10 p-4">
+      <div className="flex-1 flex flex-col overflow-hidden pl-64">
+        <div className="bg-white shadow-sm z-10 p-4 flex justify-between items-center">
           <h1 className="text-2xl font-semibold text-gray-800">Dashboard</h1>
+          
+          {/* Notification and Profile Icons */}
+          <div className="flex items-center space-x-4">
+            {/* Notification Icon */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="relative">
+                  <Bell className="h-5 w-5" />
+                  {unreadCount > 0 && (
+                    <Badge 
+                      className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center bg-red-500" 
+                      variant="destructive"
+                    >
+                      {unreadCount}
+                    </Badge>
+                  )}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-80">
+                <div className="flex items-center justify-between p-2">
+                  <p className="text-sm font-medium">Notifications</p>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={handleMarkAsRead}
+                    disabled={unreadCount === 0}
+                  >
+                    Mark all as read
+                  </Button>
+                </div>
+                <DropdownMenuSeparator />
+                {notifications.length > 0 ? (
+                  <div className="max-h-[300px] overflow-y-auto">
+                    {notifications.map((notification) => (
+                      <div 
+                        key={notification.id} 
+                        className={`p-3 ${!notification.read ? 'bg-blue-50' : ''} hover:bg-gray-100 cursor-pointer`}
+                      >
+                        <div className="flex justify-between items-start">
+                          <p className="font-medium text-sm">{notification.title}</p>
+                          <span className="text-xs text-gray-500">{notification.time}</span>
+                        </div>
+                        <p className="text-sm text-gray-600 mt-1">{notification.message}</p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="p-4 text-center text-gray-500">
+                    No notifications
+                  </div>
+                )}
+                <DropdownMenuSeparator />
+                <div className="p-2 text-center">
+                  <Button variant="ghost" size="sm" className="w-full text-sm">
+                    View all notifications
+                  </Button>
+                </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            
+            {/* Profile Icon */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="rounded-full">
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback className="bg-healthcare-primary text-white">
+                      A
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <div className="flex items-center gap-2 p-2">
+                  <Avatar>
+                    <AvatarFallback className="bg-healthcare-primary text-white">A</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="text-sm font-medium">Admin User</p>
+                    <p className="text-xs text-gray-500">admin@healthcare.com</p>
+                  </div>
+                </div>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className="cursor-pointer" onClick={() => navigate('/admin/profile')}>
+                  <User className="mr-2 h-4 w-4" />
+                  <span>My Profile</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer" onClick={() => navigate('/admin/settings')}>
+                  <Settings className="mr-2 h-4 w-4" />
+                  <span>Settings</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem 
+                  className="cursor-pointer text-red-600 focus:text-red-500" 
+                  onClick={() => {
+                    localStorage.removeItem('isLoggedIn');
+                    localStorage.removeItem('isDoctor');
+                    navigate('/login');
+                  }}
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Log out</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
         
         <main className="flex-1 overflow-y-auto p-6">
@@ -154,7 +301,7 @@ const AdminDashboard = () => {
                       Show Value
                     </Button>
                     <Button variant="ghost" size="sm">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-more-vertical"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                      <MoreVertical className="h-5 w-5" />
                     </Button>
                   </div>
                 </div>

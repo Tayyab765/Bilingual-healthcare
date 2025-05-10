@@ -4,11 +4,12 @@ import {
   ListChecks, 
   Users, 
   UserCheck, 
-  BarChart, 
   Settings,
   Menu, 
   X,
-  LogOut
+  LogOut,
+  ShieldCheck,
+  CreditCard // Changed from BarChart to CreditCard for payment
 } from 'lucide-react';
 import Logo from './Logo';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -120,16 +121,29 @@ const AdminSidebar = () => {
                 {isOpen && <span>Doctors</span>}
               </Link>
               
+              {/* New Verify Doctors Option */}
               <Link 
-                to="/admin/analytics" 
+                to="/admin/verify-doctors" 
                 className={`flex items-center px-3 py-2 rounded-md ${
-                  location.pathname === '/admin/analytics' 
+                  location.pathname === '/admin/verify-doctors' 
                     ? 'bg-healthcare-light text-healthcare-primary' 
                     : 'text-gray-700 hover:bg-gray-100'
                 } ${!isOpen && 'md:justify-center'}`}
               >
-                <BarChart className={`h-5 w-5 ${isOpen ? 'mr-3' : ''}`} />
-                {isOpen && <span>Analytics</span>}
+                <ShieldCheck className={`h-5 w-5 ${isOpen ? 'mr-3' : ''}`} />
+                {isOpen && <span>Verify Doctors</span>}
+              </Link>
+              
+              <Link 
+                to="/admin/payments" 
+                className={`flex items-center px-3 py-2 rounded-md ${
+                  location.pathname === '/admin/payments' 
+                    ? 'bg-healthcare-light text-healthcare-primary' 
+                    : 'text-gray-700 hover:bg-gray-100'
+                } ${!isOpen && 'md:justify-center'}`}
+              >
+                <CreditCard className={`h-5 w-5 ${isOpen ? 'mr-3' : ''}`} />
+                {isOpen && <span>Payments</span>}
               </Link>
               
               <Link 

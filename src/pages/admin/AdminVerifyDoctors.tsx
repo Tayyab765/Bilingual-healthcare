@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Card, CardContent } from '@/components/ui/card';
@@ -91,7 +90,7 @@ const AdminVerifyDoctors = () => {
     <div className="flex h-screen bg-gray-50">
       <AdminSidebar />
       
-      <div className="flex flex-col flex-1 overflow-hidden">
+      <div className="flex flex-col flex-1 overflow-hidden pl-64">
         <div className="bg-white shadow-sm z-10 p-4 flex justify-between items-center">
           <h1 className="text-2xl font-semibold text-gray-800">Verify Doctors</h1>
           <DropdownMenu>

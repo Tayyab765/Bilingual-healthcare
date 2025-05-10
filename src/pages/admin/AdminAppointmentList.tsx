@@ -1,100 +1,50 @@
-
 import React, { useState } from 'react';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Card, CardContent } from '@/components/ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AdminSidebar from '@/components/AdminSidebar';
-import { Bell, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useNavigate } from 'react-router-dom';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Calendar, Clock, Stethoscope, User } from 'lucide-react';
 
 const AdminAppointmentList = () => {
-  const navigate = useNavigate();
-  
-  // Example appointments data - in a real app, this would come from an API
-  const [appointments, setAppointments] = useState([
+  // Example appointments data
+  const appointments = [
     {
-      id: "1",
-      patientName: "John Doe",
-      doctorName: "Dr. Smith",
-      department: "Cardiology",
-      date: "2025-04-26",
-      time: "10:30 AM",
-      status: "Confirmed"
+      id: 1,
+      patientName: "Hamza",
+      patientEmail: "hamza@example.com",
+      patientPhone: "+1 234 567 890",
+      patientDob: "1992-05-15",
+      patientGender: "Male",
+      patientAddress: "123 Main St, New York, NY",
+      doctorName: "Dr. Ali",
+      checkup: "Fever",
+      date: "01-02-2025",
+      time: "02:30 PM",
+      status: "Completed",
+      notes: "Patient complained of high fever and headache. Prescribed antibiotics and rest."
     },
-    {
-      id: "2",
-      patientName: "Sarah Johnson",
-      doctorName: "Dr. Williams",
-      department: "Neurology",
-      date: "2025-04-27",
-      time: "2:15 PM",
-      status: "Pending"
-    },
-    {
-      id: "3",
-      patientName: "Michael Brown",
-      doctorName: "Dr. Davis",
-      department: "Orthopedics",
-      date: "2025-04-28",
-      time: "9:00 AM",
-      status: "Completed"
-    },
-    {
-      id: "4",
-      patientName: "Emily Wilson",
-      doctorName: "Dr. Taylor",
-      department: "Dermatology",
-      date: "2025-04-29",
-      time: "11:45 AM",
-      status: "Cancelled"
-    }
-  ]);
+    // ...other appointments
+  ];
 
-  const viewAppointmentDetails = (id: string) => {
-    navigate(`/admin/appointment-detail/${id}`);
+  // State for selected appointment and dialog
+  const [selectedAppointment, setSelectedAppointment] = useState(null);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+
+  // Function to handle viewing patient profile
+  const handleViewProfile = (appointment) => {
+    setSelectedAppointment(appointment);
+    setIsProfileOpen(true);
   };
-  
+
   return (
     <div className="flex h-screen bg-gray-50">
       <AdminSidebar />
       
-      <div className="flex flex-col flex-1 overflow-hidden">
-        <div className="bg-white shadow-sm z-10 p-4 flex justify-between items-center">
-          <h1 className="text-2xl font-semibold text-gray-800">Appointment List</h1>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="relative">
-                <Bell className="h-5 w-5" />
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">3</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-[300px]">
-              <DropdownMenuItem>
-                <div className="flex flex-col">
-                  <span className="font-medium">New Doctor Registration</span>
-                  <span className="text-sm text-gray-500">Dr. Smith needs verification</span>
-                </div>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <div className="flex flex-col">
-                  <span className="font-medium">Appointment Update</span>
-                  <span className="text-sm text-gray-500">10 new appointments today</span>
-                </div>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <div className="flex flex-col">
-                  <span className="font-medium">System Update</span>
-                  <span className="text-sm text-gray-500">New features available</span>
-                </div>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+      <div className="flex-1 flex flex-col overflow-hidden pl-64">
+        <div className="bg-white shadow-sm z-10 p-4">
+          <h1 className="text-2xl font-semibold text-gray-800">Appointments</h1>
         </div>
         
         <main className="flex-1 overflow-y-auto p-6">
@@ -104,9 +54,9 @@ const AdminAppointmentList = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Patient</TableHead>
-                      <TableHead>Doctor</TableHead>
-                      <TableHead>Department</TableHead>
+                      <TableHead>Patient Name</TableHead>
+                      <TableHead>Doctor Name</TableHead>
+                      <TableHead>Checkup Type</TableHead>
                       <TableHead>Date</TableHead>
                       <TableHead>Time</TableHead>
                       <TableHead>Status</TableHead>
@@ -116,16 +66,15 @@ const AdminAppointmentList = () => {
                   <TableBody>
                     {appointments.map((appointment) => (
                       <TableRow key={appointment.id}>
-                        <TableCell className="font-medium">{appointment.patientName}</TableCell>
+                        <TableCell>{appointment.patientName}</TableCell>
                         <TableCell>{appointment.doctorName}</TableCell>
-                        <TableCell>{appointment.department}</TableCell>
+                        <TableCell>{appointment.checkup}</TableCell>
                         <TableCell>{appointment.date}</TableCell>
                         <TableCell>{appointment.time}</TableCell>
                         <TableCell>
-                          <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                            appointment.status === 'Confirmed' ? 'bg-blue-100 text-blue-800' : 
-                            appointment.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 
-                            appointment.status === 'Completed' ? 'bg-green-100 text-green-800' : 
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            appointment.status === 'Completed' ? 'bg-green-100 text-green-800' :
+                            appointment.status === 'Pending' ? 'bg-blue-100 text-blue-800' :
                             'bg-red-100 text-red-800'
                           }`}>
                             {appointment.status}
@@ -134,10 +83,11 @@ const AdminAppointmentList = () => {
                         <TableCell className="text-right">
                           <Button 
                             variant="ghost" 
-                            size="icon"
-                            onClick={() => viewAppointmentDetails(appointment.id)}
+                            size="sm" 
+                            className="text-blue-600 hover:text-blue-800"
+                            onClick={() => handleViewProfile(appointment)}
                           >
-                            <Eye className="h-4 w-4" />
+                            View
                           </Button>
                         </TableCell>
                       </TableRow>
@@ -149,6 +99,68 @@ const AdminAppointmentList = () => {
           </Card>
         </main>
       </div>
+      
+      {/* Patient Profile Dialog */}
+      <Dialog open={isProfileOpen} onOpenChange={setIsProfileOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Patient Profile</DialogTitle>
+            <DialogDescription>
+              Detailed information about the patient.
+            </DialogDescription>
+          </DialogHeader>
+          
+          {selectedAppointment && (
+            <div className="mt-4 space-y-4">
+              <div className="flex flex-col items-center mb-4">
+                <Avatar className="h-20 w-20 mb-2">
+                  <AvatarFallback className="text-xl">{selectedAppointment.patientName.charAt(0)}</AvatarFallback>
+                </Avatar>
+                <h3 className="text-xl font-semibold">{selectedAppointment.patientName}</h3>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-gray-500">Email</p>
+                  <p className="font-medium">{selectedAppointment.patientEmail}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Phone</p>
+                  <p className="font-medium">{selectedAppointment.patientPhone}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Gender</p>
+                  <p className="font-medium">{selectedAppointment.patientGender}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Date of Birth</p>
+                  <p className="font-medium">{selectedAppointment.patientDob}</p>
+                </div>
+                <div className="col-span-2">
+                  <p className="text-sm text-gray-500">Address</p>
+                  <p className="font-medium">{selectedAppointment.patientAddress}</p>
+                </div>
+              </div>
+              
+              <div className="border-t pt-4 mt-4">
+                <h4 className="font-medium mb-2">Medical History</h4>
+                <p className="text-sm text-gray-500">No medical history records found for this patient.</p>
+              </div>
+              
+              <div className="border-t pt-4">
+                <h4 className="font-medium mb-2">Recent Appointments</h4>
+                <p className="text-sm text-gray-500">No recent appointments found for this patient.</p>
+              </div>
+              
+              <div className="flex justify-end pt-4">
+                <Button variant="outline" onClick={() => setIsProfileOpen(false)}>
+                  Close
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
