@@ -27,12 +27,13 @@ import DoctorAppointments from "./pages/doctor/DoctorAppointments";
 import DoctorPatients from "./pages/doctor/DoctorPatients";
 import DoctorAvailability from "./pages/doctor/DoctorAvailability";
 import PatientProfile from "./pages/doctor/PatientProfile";
-import AdminDashboard from './pages/AdminDashboard';
+import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminAppointmentList from './pages/admin/AdminAppointmentList';
 import AdminAppointmentDetail from './pages/admin/AdminAppointmentDetail';
 import AdminPatients from './pages/admin/AdminPatients';
 import AdminDoctors from './pages/admin/AdminDoctors';
 import AdminVerifyDoctors from './pages/admin/AdminVerifyDoctors';
+import VideoConsultation from './pages/videoConsultation';
 
 const App = () => {
   const [queryClient] = useState(() => new QueryClient());
@@ -71,11 +72,13 @@ const App = () => {
               <Route path="/doctor/chat" element={<Chat />} />
               
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
+              <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/admin/appointment-list" element={<AdminAppointmentList />} />
               <Route path="/admin/appointment-detail/:id" element={<AdminAppointmentDetail />} />
               <Route path="/admin/patients" element={<AdminPatients />} />
               <Route path="/admin/doctors" element={<AdminDoctors />} />
               <Route path="/admin/verify-doctors" element={<AdminVerifyDoctors />} />
+              <Route path="/video-consultation" element={<VideoConsultation />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

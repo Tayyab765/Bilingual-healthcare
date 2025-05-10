@@ -16,17 +16,52 @@ import {
   HighBloodPressure 
 } from '@/components/SymptomIcons';
 
-const LandingPage = () => {
+const Header = () => {
   const isMobile = useIsMobile();
-  const [searchTerm, setSearchTerm] = useState('');
-  const [searchLocation, setSearchLocation] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const navigate = useNavigate();
-  
+
   useEffect(() => {
     const loggedIn = localStorage.getItem('isLoggedIn') === 'true';
     setIsLoggedIn(loggedIn);
   }, []);
+
+  return (
+    <header className="border-b bg-white py-3 px-4 md:px-6">
+      <div className="flex items-center justify-between">
+        {/* Logo/Brand section */}
+        <div className="flex items-center">
+          <Logo className="flex-shrink-0" />
+        </div>
+
+
+        {/* Actions section */}
+        <div className="flex items-center space-x-4">
+          <LanguageToggle size="sm" className="hidden md:flex" />
+          {!isLoggedIn ? (
+            <>
+              <Button asChild variant="ghost" className="hidden md:flex">
+                <Link to="/doctor/signup">Join as Doctor</Link>
+              </Button>
+              <Button className="bg-healthcare-primary hover:bg-healthcare-secondary rounded-full px-6">
+                <Link to="/login" className="text-white">Login</Link>
+              </Button>
+            </>
+          ) : (
+            <Button asChild className="bg-healthcare-primary hover:bg-healthcare-secondary rounded-full px-6">
+              <Link to="/dashboard" className="text-white">Dashboard</Link>
+            </Button>
+          )}
+        </div>
+      </div>
+    </header>
+  );
+};
+
+const LandingPage = () => {
+  const isMobile = useIsMobile();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchLocation, setSearchLocation] = useState('');
+  const navigate = useNavigate();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,7 +76,7 @@ const LandingPage = () => {
       description: 'Verified Healthcare Professionals',
       icon: <Video className="h-6 w-6 text-healthcare-primary" />,
       bgColor: 'bg-blue-50',
-      link: '/appointments'
+      link: '/video-consultation' // Updated link to new page
     },
     {
       title: 'In-clinic Visit',
@@ -56,22 +91,7 @@ const LandingPage = () => {
       icon: <Heart className="h-6 w-6 text-healthcare-primary" />,
       bgColor: 'bg-green-50',
       link: '/chat'
-    },
-    {
-      title: 'Health Consultation',
-      description: 'Healthy Lifestyle',
-      icon: <Headphones className="h-6 w-6 text-healthcare-primary" />,
-      bgColor: 'bg-yellow-50',
-      link: '/appointments'
     }
-  ];
-
-  const categoryLinks = [
-    { title: 'Labs', icon: '🔬', link: '/labs' },
-    { title: 'Medicines', icon: '💊', link: '/medicines' },
-    { title: 'Blogs', icon: '📝', link: '/blog' },
-    { title: 'Hospitals', icon: '🏥', link: '/hospitals' },
-    { title: 'Surgeries', icon: '⚕️', link: '/surgeries' },
   ];
 
   const symptoms = [
@@ -126,54 +146,7 @@ const LandingPage = () => {
   return (
     <div className="min-h-screen bg-healthcare-bg">
       {/* Header */}
-      <header className="bg-white py-4 px-6 shadow-sm sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <Logo className="flex-shrink-0" />
-          
-          <div className="hidden md:flex gap-6 items-center">
-            <Link to="/doctors" className="text-gray-600 hover:text-healthcare-primary transition-colors">
-              Find Doctors
-            </Link>
-            <Link to="/hospitals" className="text-gray-600 hover:text-healthcare-primary transition-colors">
-              Hospitals
-            </Link>
-            <Link to="/surgeries" className="text-gray-600 hover:text-healthcare-primary transition-colors">
-              Surgeries
-            </Link>
-            <Link to="/medicines" className="text-gray-600 hover:text-healthcare-primary transition-colors">
-              Medicines
-            </Link>
-            <Link to="/labs" className="text-gray-600 hover:text-healthcare-primary transition-colors">
-              Labs
-            </Link>
-            <Link to="/blog" className="text-gray-600 hover:text-healthcare-primary transition-colors">
-              Blog
-            </Link>
-            <Link to="/forum" className="text-gray-600 hover:text-healthcare-primary transition-colors">
-              Forum
-            </Link>
-          </div>
-          
-          <div className="flex items-center gap-3">
-            <LanguageToggle size="sm" className="hidden md:flex" />
-            
-            {!isLoggedIn ? (
-              <>
-                <Button asChild variant="ghost" className="hidden md:flex">
-                  <Link to="/doctor/signup">Join as Doctor</Link>
-                </Button>
-                <Button className="bg-healthcare-primary hover:bg-healthcare-secondary rounded-full px-6">
-                  <Link to="/login" className="text-white">Login</Link>
-                </Button>
-              </>
-            ) : (
-              <Button asChild className="bg-healthcare-primary hover:bg-healthcare-secondary rounded-full px-6">
-                <Link to="/dashboard" className="text-white">Dashboard</Link>
-              </Button>
-            )}
-          </div>
-        </div>
-      </header>
+      <Header />
 
       {/* Main content */}
       <main>
@@ -186,7 +159,7 @@ const LandingPage = () => {
             <p className="text-gray-600">Hello, Guest!</p>
           </div>
           
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6">
+          <h1 className="text-2xl md:text-3xl font-bold mb-6 bg-gradient-to-r from-healthcare-primary to-blue-500 bg-clip-text text-transparent">
             Find the Best Doctor Near You
           </h1>
           
@@ -232,51 +205,48 @@ const LandingPage = () => {
           
           {/* How can we help section */}
           <div className="mb-10">
-            <h2 className="text-xl font-semibold text-gray-800 mb-6">
+            <h2 className="text-xl font-semibold mb-6 text-indigo-600">
               How can we help you today?
             </h2>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {serviceCards.map((card, index) => (
                 <Link
                   key={index}
                   to={card.link}
-                  className={`${card.bgColor} rounded-lg p-4 flex flex-col hover:shadow-md transition-shadow`}
+                  className={`${card.bgColor} rounded-lg p-4 flex flex-col hover:shadow-md transition-shadow h-52 ${
+                    index === 2 ? 'sm:col-span-1 md:col-span-1' : 'max-w-[250px]'
+                  }`}
                 >
-                  <div className="flex justify-between items-center mb-8">
-                    <div>
-                      <h3 className="font-medium text-gray-800">{card.title}</h3>
+                  <div className="flex justify-between items-center mb-4">
+                    <div className="w-full">
+                      <h3 className={`font-medium ${index === 0 ? 'text-navy-800' : 'text-gray-800'}`}>
+                        {card.title}
+                      </h3>
                       <p className="text-sm text-gray-600">{card.description}</p>
                     </div>
-                    {card.icon}
+                    {/* Icon removed */}
                   </div>
                   
-                  <div className="mt-auto">
+                  <div className="flex-grow flex items-center justify-center">
                     {index === 0 && (
                       <img 
-                        src="/placeholder.svg" 
+                        src="/doctor.svg" 
                         alt="Doctor with thumbs up" 
-                        className="h-24 ml-auto"
+                        className="h-32 w-auto"
                       />
                     )}
                     {index === 1 && (
                       <img 
-                        src="/placeholder.svg" 
+                        src="/doctor.svg" 
                         alt="Doctor in clinic" 
                         className="h-24 ml-auto"
                       />
                     )}
                     {index === 2 && (
                       <img 
-                        src="/placeholder.svg" 
+                        src="/doctor.svg" 
                         alt="Doctor on call" 
-                        className="h-24 ml-auto"
-                      />
-                    )}
-                    {index === 3 && (
-                      <img 
-                        src="/placeholder.svg" 
-                        alt="Health consultation" 
                         className="h-24 ml-auto"
                       />
                     )}
@@ -286,24 +256,12 @@ const LandingPage = () => {
             </div>
           </div>
           
-          {/* Category links */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-            {categoryLinks.map((category, index) => (
-              <Link
-                key={index}
-                to={category.link}
-                className="bg-white rounded-lg p-4 flex flex-col items-center justify-center hover:shadow-md transition-shadow text-center"
-              >
-                <span className="text-2xl mb-2">{category.icon}</span>
-                <span className="text-gray-700">{category.title}</span>
-              </Link>
-            ))}
-          </div>
+
           
           {/* Medical advice section */}
           <div className="mt-10 bg-green-50 rounded-lg p-6 flex flex-col md:flex-row gap-6 items-center">
             <div className="flex-1">
-              <h2 className="text-xl font-semibold text-gray-800 mb-4">
+              <h2 className="text-xl font-semibold mb-4 bg-gradient-to-r from-green-500 to-teal-400 bg-clip-text text-transparent">
                 Get free medical advice by asking a doctor
               </h2>
               
@@ -341,7 +299,7 @@ const LandingPage = () => {
         {/* Symptoms Section */}
         <section className="py-8 px-4 sm:px-6 max-w-7xl mx-auto mb-10">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-semibold text-gray-800">Symptoms</h2>
+            <h2 className="text-xl font-semibold text-gray-900">Symptoms</h2>
             <Link to="/symptoms" className="flex items-center text-healthcare-primary hover:underline">
               <span>View all</span>
               <ChevronRight className="h-4 w-4" />
@@ -363,7 +321,7 @@ const LandingPage = () => {
         {/* Diseases Section */}
         <section className="py-8 px-4 sm:px-6 max-w-7xl mx-auto mb-10">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-semibold text-gray-800">Diseases</h2>
+            <h2 className="text-xl font-semibold text-gray-900">Diseases</h2>
             <Link to="/diseases" className="flex items-center text-healthcare-primary hover:underline">
               <span>View all</span>
               <ChevronRight className="h-4 w-4" />
@@ -384,7 +342,9 @@ const LandingPage = () => {
 
         {/* Testimonials Section */}
         <section className="py-8 px-4 sm:px-6 max-w-7xl mx-auto mb-10">
-          <h2 className="text-xl font-semibold text-gray-800 mb-6">Patient Testimonials</h2>
+          <h2 className="text-xl font-semibold mb-6 text-gray-900">
+            Patient Testimonials
+          </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {testimonials.map((testimonial) => (
@@ -410,32 +370,13 @@ const LandingPage = () => {
             ))}
           </div>
         </section>
-        
-        {/* Doctor signup CTA */}
-        <section className="py-12 bg-gradient-to-r from-blue-50 to-green-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6">
-              Join Our Team as a Doctor
-            </h2>
-            <p className="text-lg text-gray-600 mb-8 max-w-3xl mx-auto">
-              Are you a healthcare professional looking to expand your practice? Join our network of multilingual doctors and connect with patients who need your expertise.
-            </p>
-            <Button 
-              size="lg" 
-              className="bg-healthcare-secondary hover:bg-healthcare-primary text-white px-8 py-6 h-auto text-lg rounded-md"
-              onClick={() => navigate('/doctor/signup')}
-            >
-              Apply as a Doctor
-            </Button>
-          </div>
-        </section>
       </main>
       
       {/* Footer */}
       <footer className="bg-white py-8 px-6 border-t">
         <div className="max-w-7xl mx-auto text-center">
           <p className="text-gray-500 text-sm">
-            © {new Date().getFullYear()} Bilingual Healthcare. All rights reserved.
+            © {new Date().getFullYear()} <span className="text-healthcare-primary font-medium">Bilingual Healthcare</span>. All rights reserved.
           </p>
         </div>
       </footer>

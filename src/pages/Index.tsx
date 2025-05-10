@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
@@ -49,7 +48,7 @@ const Index = () => {
     <div className="min-h-screen bg-healthcare-bg flex w-full">
       <Sidebar />
       
-      <div className={`flex-1 ${isMobile ? 'ml-0' : 'ml-0 md:ml-64'}`}>
+      <div className="flex-1">
         <Header />
         
         <main className="py-6 sm:py-8 px-4 sm:px-6 md:px-10">

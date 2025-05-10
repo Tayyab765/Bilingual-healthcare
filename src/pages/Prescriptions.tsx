@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -60,7 +59,7 @@ const Prescriptions = () => {
       <div className="flex-1">
         <Header />
         
-        <main className="p-4 md:p-6 lg:ml-64">
+        <main className="p-4 md:p-6">
           <div className="max-w-7xl mx-auto">
             <h1 className="text-2xl font-semibold text-gray-900 mb-6">
               {isDoctor ? "Patient Prescriptions" : "My Prescriptions"}

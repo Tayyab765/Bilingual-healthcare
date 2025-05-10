@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { MessageSquare, Send, X, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -103,6 +103,7 @@ const Chat = () => {
   const [showDoctorsList, setShowDoctorsList] = useState(true);
   const [doctorsWithAppointments, setDoctorsWithAppointments] = useState([]);
   const [unreadMessages, setUnreadMessages] = useState({});
+  const messageContainerRef = useRef(null);
   
   useEffect(() => {
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
@@ -142,6 +143,13 @@ const Chat = () => {
       setActiveDoctorId(filteredDoctors[0].id);
     }
   }, [location.state, isMobile]);
+  
+  useEffect(() => {
+    // Scroll to the bottom when messages change
+    if (messageContainerRef.current) {
+      messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
+    }
+  }, [conversations, activeDoctorId]);
   
   const handleSendMessage = () => {
     if (!message.trim() || !activeDoctorId) return;
@@ -208,7 +216,7 @@ const Chat = () => {
       <div className="flex-1">
         <Header />
         
-        <main className="p-0 lg:ml-64">
+        <main className="p-0">
           <div className="flex h-[calc(100vh-64px)]">
             {isMobile && (
               <button 
@@ -304,7 +312,7 @@ const Chat = () => {
                     </div>
                   </div>
                   
-                  <div className="flex-1 p-4 overflow-y-auto">
+                  <div className="flex-1 p-4 overflow-y-auto" ref={messageContainerRef}>
                     <div className="max-w-2xl mx-auto space-y-4">
                       {activeConversation.map(msg => (
                         <div 
