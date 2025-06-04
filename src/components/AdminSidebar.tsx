@@ -22,6 +22,7 @@ const AdminSidebar = () => {
   const location = useLocation();
 
   useEffect(() => {
+    // For admin module, always keep sidebar open on desktop
     setIsOpen(!isMobile);
   }, [isMobile]);
 
@@ -38,12 +39,14 @@ const AdminSidebar = () => {
   const handleLogout = () => {
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('isDoctor');
+    localStorage.removeItem('isAdmin');
+    window.location.href = '/';
   };
 
 
   return (
     <>
-      {/* Mobile toggle button */}
+      {/* Mobile toggle button - only visible on mobile */}
       {isMobile && (
         <button 
           onClick={toggleSidebar} 
@@ -55,19 +58,13 @@ const AdminSidebar = () => {
     
       <div className="bg-white border-r shadow-sm h-screen fixed top-0 left-0 z-40 w-64">
         <div className="flex flex-col h-full">
-          {/* Sidebar header with logo */}
-          <div className="p-4 flex items-center justify-between">
-            <div className={`flex items-center ${!isOpen && 'md:justify-center'}`}>
+          {/* Sidebar header with logo only - removed Admin text */}
+          <div className="p-4 flex items-center">
+            <div className="flex items-center">
               <Link to="/admin" className="flex items-center">
                 <Logo />
-                {isOpen && <span className="ml-2 font-semibold text-xl">Admin</span>}
               </Link>
             </div>
-            {!isMobile && isOpen && (
-              <button onClick={toggleSidebar} className="text-gray-500 hover:text-gray-700">
-                <X size={20} />
-              </button>
-            )}
           </div>
           
           {/* Navigation links */}
@@ -79,10 +76,10 @@ const AdminSidebar = () => {
                   location.pathname === '/admin' 
                     ? 'bg-healthcare-light text-healthcare-primary' 
                     : 'text-gray-700 hover:bg-gray-100'
-                } ${!isOpen && 'md:justify-center'}`}
+                }`}
               >
-                <LayoutDashboard className={`h-5 w-5 ${isOpen ? 'mr-3' : ''}`} />
-                {isOpen && <span>Dashboard</span>}
+                <LayoutDashboard className="h-5 w-5 mr-3" />
+                <span>Dashboard</span>
               </Link>
               
               <Link 
@@ -91,10 +88,10 @@ const AdminSidebar = () => {
                   location.pathname === '/admin/appointments' 
                     ? 'bg-healthcare-light text-healthcare-primary' 
                     : 'text-gray-700 hover:bg-gray-100'
-                } ${!isOpen && 'md:justify-center'}`}
+                }`}
               >
-                <ListChecks className={`h-5 w-5 ${isOpen ? 'mr-3' : ''}`} />
-                {isOpen && <span>Appointments</span>}
+                <ListChecks className="h-5 w-5 mr-3" />
+                <span>Appointments</span>
               </Link>
               
               <Link 
@@ -103,10 +100,10 @@ const AdminSidebar = () => {
                   location.pathname === '/admin/patients' 
                     ? 'bg-healthcare-light text-healthcare-primary' 
                     : 'text-gray-700 hover:bg-gray-100'
-                } ${!isOpen && 'md:justify-center'}`}
+                }`}
               >
-                <Users className={`h-5 w-5 ${isOpen ? 'mr-3' : ''}`} />
-                {isOpen && <span>Patients</span>}
+                <Users className="h-5 w-5 mr-3" />
+                <span>Patients</span>
               </Link>
               
               <Link 
@@ -115,10 +112,10 @@ const AdminSidebar = () => {
                   location.pathname === '/admin/doctors' 
                     ? 'bg-healthcare-light text-healthcare-primary' 
                     : 'text-gray-700 hover:bg-gray-100'
-                } ${!isOpen && 'md:justify-center'}`}
+                }`}
               >
-                <UserCheck className={`h-5 w-5 ${isOpen ? 'mr-3' : ''}`} />
-                {isOpen && <span>Doctors</span>}
+                <UserCheck className="h-5 w-5 mr-3" />
+                <span>Doctors</span>
               </Link>
               
               {/* New Verify Doctors Option */}
@@ -128,10 +125,10 @@ const AdminSidebar = () => {
                   location.pathname === '/admin/verify-doctors' 
                     ? 'bg-healthcare-light text-healthcare-primary' 
                     : 'text-gray-700 hover:bg-gray-100'
-                } ${!isOpen && 'md:justify-center'}`}
+                }`}
               >
-                <ShieldCheck className={`h-5 w-5 ${isOpen ? 'mr-3' : ''}`} />
-                {isOpen && <span>Verify Doctors</span>}
+                <ShieldCheck className="h-5 w-5 mr-3" />
+                <span>Verify Doctors</span>
               </Link>
               
               <Link 
@@ -140,10 +137,10 @@ const AdminSidebar = () => {
                   location.pathname === '/admin/payments' 
                     ? 'bg-healthcare-light text-healthcare-primary' 
                     : 'text-gray-700 hover:bg-gray-100'
-                } ${!isOpen && 'md:justify-center'}`}
+                }`}
               >
-                <CreditCard className={`h-5 w-5 ${isOpen ? 'mr-3' : ''}`} />
-                {isOpen && <span>Payments</span>}
+                <CreditCard className="h-5 w-5 mr-3" />
+                <span>Payments</span>
               </Link>
               
               <Link 
@@ -152,10 +149,10 @@ const AdminSidebar = () => {
                   location.pathname === '/admin/settings' 
                     ? 'bg-healthcare-light text-healthcare-primary' 
                     : 'text-gray-700 hover:bg-gray-100'
-                } ${!isOpen && 'md:justify-center'}`}
+                }`}
               >
-                <Settings className={`h-5 w-5 ${isOpen ? 'mr-3' : ''}`} />
-                {isOpen && <span>Settings</span>}
+                <Settings className="h-5 w-5 mr-3" />
+                <span>Settings</span>
               </Link>
             </nav>
           </div>
@@ -165,10 +162,10 @@ const AdminSidebar = () => {
             <Link 
               to="/login" 
               onClick={handleLogout}
-              className={`flex items-center px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100 ${!isOpen && 'md:justify-center'}`}
+              className="flex items-center px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100"
             >
-              <LogOut className={`h-5 w-5 ${isOpen ? 'mr-3' : ''}`} />
-              {isOpen && <span>Logout</span>}
+              <LogOut className="h-5 w-5 mr-3" />
+              <span>Logout</span>
             </Link>
           </div>
         </div>
