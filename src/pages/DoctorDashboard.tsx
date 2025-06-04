@@ -1,11 +1,19 @@
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Calendar, Users, Clock, FileText, Settings, ListChecks, LayoutDashboard, MessageSquare, Bell } from 'lucide-react';
+import { Calendar, Users, Clock, FileText, Settings, ListChecks, LayoutDashboard, MessageSquare, Bell, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent } from '@/components/ui/card';
 import Sidebar from '@/components/Sidebar';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 
 const DoctorDashboard = () => {
   const navigate = useNavigate();
@@ -18,6 +26,116 @@ const DoctorDashboard = () => {
   const [uniquePatients, setUniquePatients] = useState(57);
   const [totalCanceled, setTotalCanceled] = useState(65);
   const [totalRevenue, setTotalRevenue] = useState(128);
+  
+  // State for notifications and messages
+  const [notifications, setNotifications] = useState([
+    {
+      id: 1,
+      title: "New appointment",
+      message: "You have a new appointment with John Doe",
+      time: "5 min ago",
+      read: false
+    },
+    {
+      id: 2,
+      title: "Appointment cancelled",
+      message: "Sarah Smith has cancelled her appointment for tomorrow",
+      time: "1 hour ago",
+      read: false
+    },
+    {
+      id: 3,
+      title: "Lab results available",
+      message: "Lab results for patient Michael Johnson are now available",
+      time: "2 hours ago",
+      read: true
+    }
+  ]);
+  
+  const [messages, setMessages] = useState([
+    {
+      id: 1,
+      sender: "John Doe",
+      preview: "Hello doctor, I have a question about my prescription...",
+      avatar: "",
+      time: "10 min ago",
+      read: false
+    },
+    {
+      id: 2,
+      sender: "Sarah Smith",
+      preview: "Thank you for the consultation yesterday. I'm feeling much better...",
+      avatar: "",
+      time: "1 day ago",
+      read: false
+    },
+    {
+      id: 3,
+      sender: "Emily Johnson",
+      preview: "When should I schedule my follow-up appointment?",
+      avatar: "",
+      time: "2 days ago",
+      read: true
+    },
+    {
+      id: 4,
+      sender: "Michael Brown",
+      preview: "I've uploaded my latest blood test results to the portal.",
+      avatar: "",
+      time: "3 days ago",
+      read: true
+    },
+    {
+      id: 5,
+      sender: "Lisa Taylor",
+      preview: "Is it normal to experience these side effects?",
+      avatar: "",
+      time: "5 days ago",
+      read: true
+    }
+  ]);
+  
+  // Count unread notifications and messages
+  const unreadNotifications = notifications.filter(n => !n.read).length;
+  const unreadMessages = messages.filter(m => !m.read).length;
+  
+  // Function to mark all notifications as read
+  const markAllNotificationsAsRead = () => {
+    setNotifications(notifications.map(notification => ({
+      ...notification,
+      read: true
+    })));
+    toast({
+      title: "Notifications marked as read",
+      description: "All notifications have been marked as read.",
+    });
+  };
+  
+  // Function to mark all messages as read
+  const markAllMessagesAsRead = () => {
+    setMessages(messages.map(message => ({
+      ...message,
+      read: true
+    })));
+    toast({
+      title: "Messages marked as read",
+      description: "All messages have been marked as read.",
+    });
+  };
+  
+  // Function to mark a single notification as read
+  const markNotificationAsRead = (id) => {
+    setNotifications(notifications.map(notification => 
+      notification.id === id ? { ...notification, read: true } : notification
+    ));
+  };
+  
+  // Function to mark a single message as read
+  const markMessageAsRead = (id) => {
+    setMessages(messages.map(message => 
+      message.id === id ? { ...message, read: true } : message
+    ));
+  };
   
   useEffect(() => {
     // Check if logged in as doctor
@@ -78,17 +196,148 @@ const DoctorDashboard = () => {
                 </div>
               </div>
               <div className="flex items-center space-x-4">
-                {/* Notification button */}
-                <button className="relative p-2 rounded-full bg-blue-50 text-blue-500 hover:bg-blue-100 transition-all duration-200">
-                  <Bell className="h-5 w-5" />
-                  <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
-                </button>
+                {/* Notification dropdown */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="relative p-2 rounded-full bg-blue-50 text-blue-500 hover:bg-blue-100 transition-all duration-200">
+                      <Bell className="h-5 w-5" />
+                      {unreadNotifications > 0 && (
+                        <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                          {unreadNotifications}
+                        </span>
+                      )}
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-80">
+                    <div className="flex items-center justify-between p-3 border-b">
+                      <h3 className="font-medium">Notifications</h3>
+                      {unreadNotifications > 0 && (
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={markAllNotificationsAsRead}
+                          className="text-xs text-blue-500 hover:text-blue-700"
+                        >
+                          Mark all as read
+                        </Button>
+                      )}
+                    </div>
+                    
+                    <div className="max-h-[380px] overflow-y-auto">
+                      {notifications.length > 0 ? (
+                        notifications.map((notification) => (
+                          <div 
+                            key={notification.id}
+                            className={`p-3 hover:bg-gray-50 border-b last:border-0 cursor-pointer ${!notification.read ? "bg-blue-50" : ""}`}
+                            onClick={() => markNotificationAsRead(notification.id)}
+                          >
+                            <div className="flex justify-between mb-1">
+                              <p className="font-medium text-sm">{notification.title}</p>
+                              <span className="text-xs text-gray-400">{notification.time}</span>
+                            </div>
+                            <p className="text-xs text-gray-500">{notification.message}</p>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="p-4 text-center text-gray-500">
+                          No notifications to display
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="p-2 border-t">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="w-full text-xs text-blue-500 hover:text-blue-700"
+                        onClick={() => navigate('/doctor/notifications')}
+                      >
+                        View all notifications
+                      </Button>
+                    </div>
+                  </DropdownMenuContent>
+                </DropdownMenu>
                 
-                {/* Chat button */}
-                <button className="relative p-2 rounded-full bg-indigo-50 text-indigo-500 hover:bg-indigo-100 transition-all duration-200">
-                  <MessageSquare className="h-5 w-5" />
-                  <span className="absolute -top-1 -right-1 bg-indigo-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">5</span>
-                </button>
+                {/* Messages dropdown */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="relative p-2 rounded-full bg-indigo-50 text-indigo-500 hover:bg-indigo-100 transition-all duration-200">
+                      <MessageSquare className="h-5 w-5" />
+                      {unreadMessages > 0 && (
+                        <span className="absolute -top-1 -right-1 bg-indigo-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                          {unreadMessages}
+                        </span>
+                      )}
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-80">
+                    <div className="flex items-center justify-between p-3 border-b">
+                      <h3 className="font-medium">Messages</h3>
+                      {unreadMessages > 0 && (
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={markAllMessagesAsRead}
+                          className="text-xs text-indigo-500 hover:text-indigo-700"
+                        >
+                          Mark all as read
+                        </Button>
+                      )}
+                    </div>
+                    
+                    <div className="max-h-[380px] overflow-y-auto">
+                      {messages.length > 0 ? (
+                        messages.map((message) => (
+                          <div 
+                            key={message.id}
+                            className={`p-3 hover:bg-gray-50 border-b last:border-0 cursor-pointer ${!message.read ? "bg-indigo-50" : ""}`}
+                            onClick={() => {
+                              markMessageAsRead(message.id);
+                              navigate('/doctor/chat');
+                            }}
+                          >
+                            <div className="flex items-center gap-3 mb-1">
+                              <Avatar className="h-8 w-8">
+                                {message.avatar ? (
+                                  <AvatarImage src={message.avatar} alt={message.sender} />
+                                ) : (
+                                  <AvatarFallback className="bg-indigo-100 text-indigo-600">
+                                    {message.sender.charAt(0)}
+                                  </AvatarFallback>
+                                )}
+                              </Avatar>
+                              <div className="flex-1">
+                                <div className="flex justify-between">
+                                  <p className="font-medium text-sm">{message.sender}</p>
+                                  <span className="text-xs text-gray-400">{message.time}</span>
+                                </div>
+                                <p className="text-xs text-gray-500 truncate">{message.preview}</p>
+                              </div>
+                              {!message.read && (
+                                <Badge variant="outline" className="h-2 w-2 rounded-full bg-indigo-500"></Badge>
+                              )}
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="p-4 text-center text-gray-500">
+                          No messages to display
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="p-2 border-t">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="w-full text-xs text-indigo-500 hover:text-indigo-700"
+                        onClick={() => navigate('/doctor/chat')}
+                      >
+                        View all messages
+                      </Button>
+                    </div>
+                  </DropdownMenuContent>
+                </DropdownMenu>
                 
                 <div className="ml-4 flex items-center md:ml-6">
                   {/* Profile dropdown */}
