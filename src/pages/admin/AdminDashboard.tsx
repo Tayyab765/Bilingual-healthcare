@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Calendar, Users, Bell, User, MoreVertical, Settings, LogOut } from 'lucide-react';
+import { Calendar, Users, Bell, User, MoreVertical, Settings, LogOut, Filter, Search } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
@@ -14,6 +14,8 @@ import {
   DropdownMenuTrigger 
 } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -24,9 +26,12 @@ const AdminDashboard = () => {
   const [totalCanceled, setTotalCanceled] = useState(65);
   const [totalRevenue, setTotalRevenue] = useState(128);
   
-  // Toggle between chart and value view
-  const [showChartValue, setShowChartValue] = useState(false);
-  
+  // Appointment filters
+  const [selectedDoctor, setSelectedDoctor] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [filteredAppointments, setFilteredAppointments] = useState([]);
+
   // Notifications state
   const [notifications, setNotifications] = useState([
     {
@@ -85,8 +90,44 @@ const AdminDashboard = () => {
       date: "05-02-2025",
       time: "10:30 PM",
       status: "Pending"
+    },
+    {
+      patientName: "Ahmed",
+      doctorName: "Dr. Ali",
+      checkup: "Cold & Flu",
+      date: "03-02-2025",
+      time: "09:15 AM",
+      status: "Completed"
+    },
+    {
+      patientName: "Sarah",
+      doctorName: "Dr. Ali",
+      checkup: "Annual Physical",
+      date: "12-02-2025",
+      time: "11:00 AM",
+      status: "Pending"
+    },
+    {
+      patientName: "Fatima",
+      doctorName: "Dr. Ahmad",
+      checkup: "Blood Pressure",
+      date: "18-02-2025",
+      time: "04:45 PM",
+      status: "Completed"
     }
   ];
+
+  // Extract unique doctor names for the filter dropdown
+  const doctorsList = ['all', ...new Set(appointments.map(app => app.doctorName))];
+  
+  // Group appointments by doctor
+  const appointmentsByDoctor = appointments.reduce((acc, appointment) => {
+    if (!acc[appointment.doctorName]) {
+      acc[appointment.doctorName] = [];
+    }
+    acc[appointment.doctorName].push(appointment);
+    return acc;
+  }, {});
 
   // Handler for marking notifications as read
   const handleMarkAsRead = () => {
@@ -95,6 +136,53 @@ const AdminDashboard = () => {
   
   // Count unread notifications
   const unreadCount = notifications.filter(n => !n.read).length;
+
+  // Apply filters to appointments
+  useEffect(() => {
+    let result = [...appointments];
+    
+    // Filter by doctor
+    if (selectedDoctor !== 'all') {
+      result = result.filter(app => app.doctorName === selectedDoctor);
+    }
+    
+    // Filter by status
+    if (statusFilter !== 'all') {
+      result = result.filter(app => app.status.toLowerCase() === statusFilter.toLowerCase());
+    }
+    
+    // Filter by search query
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      result = result.filter(app => 
+        app.patientName.toLowerCase().includes(query) || 
+        app.doctorName.toLowerCase().includes(query) || 
+        app.checkup.toLowerCase().includes(query)
+      );
+    }
+    
+    setFilteredAppointments(result);
+  }, [selectedDoctor, statusFilter, searchQuery, appointments]);
+
+  // Get statistics for the selected doctor
+  const getSelectedDoctorStats = () => {
+    if (selectedDoctor === 'all') return null;
+    
+    const doctorApps = appointmentsByDoctor[selectedDoctor] || [];
+    const completed = doctorApps.filter(app => app.status === 'Completed').length;
+    const pending = doctorApps.filter(app => app.status === 'Pending').length;
+    const cancelled = doctorApps.filter(app => app.status === 'Cancelled').length;
+    
+    return {
+      total: doctorApps.length,
+      completed,
+      pending,
+      cancelled
+    };
+  };
+
+  // Get selected doctor stats
+  const selectedDoctorStats = getSelectedDoctorStats();
   
   return (
     <div className="flex h-screen bg-gray-50">
@@ -185,10 +273,7 @@ const AdminDashboard = () => {
                   </div>
                 </div>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="cursor-pointer" onClick={() => navigate('/admin/profile')}>
-                  <User className="mr-2 h-4 w-4" />
-                  <span>My Profile</span>
-                </DropdownMenuItem>
+                {/* Removed the "My Profile" option */}
                 <DropdownMenuItem className="cursor-pointer" onClick={() => navigate('/admin/settings')}>
                   <Settings className="mr-2 h-4 w-4" />
                   <span>Settings</span>
@@ -278,32 +363,11 @@ const AdminDashboard = () => {
           
           {/* Charts Section */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-            {/* Pie Charts */}
+            {/* Pie Charts - Removed Chart/Value toggle buttons */}
             <Card className="bg-white">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-lg font-medium">Pie Chart</h2>
-                  <div className="flex items-center space-x-2">
-                    <Button
-                      variant={!showChartValue ? "default" : "outline"}
-                      size="sm"
-                      className="h-8 text-xs"
-                      onClick={() => setShowChartValue(false)}
-                    >
-                      Chart
-                    </Button>
-                    <Button
-                      variant={showChartValue ? "default" : "outline"}
-                      size="sm"
-                      className="h-8 text-xs"
-                      onClick={() => setShowChartValue(true)}
-                    >
-                      Show Value
-                    </Button>
-                    <Button variant="ghost" size="sm">
-                      <MoreVertical className="h-5 w-5" />
-                    </Button>
-                  </div>
                 </div>
                 
                 <div className="grid grid-cols-3 gap-4">
@@ -349,15 +413,11 @@ const AdminDashboard = () => {
               </CardContent>
             </Card>
             
-            {/* Line Chart */}
+            {/* Line Chart - Removed Save Report button */}
             <Card className="bg-white">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-lg font-medium">Chart Appointments</h2>
-                  <Button variant="outline" size="sm" className="h-8">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-download mr-2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                    Save Report
-                  </Button>
                 </div>
                 
                 <div className="h-64 relative">
@@ -417,13 +477,89 @@ const AdminDashboard = () => {
             </Card>
           </div>
           
-          {/* Appointments Table */}
+          {/* Appointments Table with Filters */}
           <div className="mt-6">
             <Card>
               <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-medium">Appointments</h2>
+                <div className="flex flex-col md:flex-row md:items-center justify-between mb-6">
+                  <h2 className="text-lg font-medium mb-4 md:mb-0">Appointments</h2>
+                  
+                  {/* Filter controls */}
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    {/* Doctor filter */}
+                    <div className="w-full sm:w-52">
+                      <Select 
+                        value={selectedDoctor} 
+                        onValueChange={setSelectedDoctor}
+                      >
+                        <SelectTrigger className="h-9">
+                          <SelectValue placeholder="Filter by doctor" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {doctorsList.map((doctor) => (
+                            <SelectItem key={doctor} value={doctor}>
+                              {doctor === 'all' ? 'All Doctors' : doctor}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    {/* Status filter */}
+                    <div className="w-full sm:w-44">
+                      <Select 
+                        value={statusFilter} 
+                        onValueChange={setStatusFilter}
+                      >
+                        <SelectTrigger className="h-9">
+                          <SelectValue placeholder="Filter by status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Status</SelectItem>
+                          <SelectItem value="completed">Completed</SelectItem>
+                          <SelectItem value="pending">Pending</SelectItem>
+                          <SelectItem value="cancelled">Cancelled</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    {/* Search field */}
+                    <div className="w-full sm:w-64 relative">
+                      <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
+                      <Input
+                        placeholder="Search appointments..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="pl-8 h-9"
+                      />
+                    </div>
+                  </div>
                 </div>
+                
+                {/* Doctor Statistics Card (appears when a doctor is selected) */}
+                {selectedDoctorStats && (
+                  <div className="mb-6 p-4 bg-blue-50 border border-blue-100 rounded-md">
+                    <h3 className="font-medium mb-2">{selectedDoctor} Statistics</h3>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      <div className="bg-white p-3 rounded shadow-sm">
+                        <p className="text-sm text-gray-500">Total Appointments</p>
+                        <p className="text-xl font-bold">{selectedDoctorStats.total}</p>
+                      </div>
+                      <div className="bg-white p-3 rounded shadow-sm">
+                        <p className="text-sm text-gray-500">Completed</p>
+                        <p className="text-xl font-bold text-green-600">{selectedDoctorStats.completed}</p>
+                      </div>
+                      <div className="bg-white p-3 rounded shadow-sm">
+                        <p className="text-sm text-gray-500">Pending</p>
+                        <p className="text-xl font-bold text-yellow-600">{selectedDoctorStats.pending}</p>
+                      </div>
+                      <div className="bg-white p-3 rounded shadow-sm">
+                        <p className="text-sm text-gray-500">Cancelled</p>
+                        <p className="text-xl font-bold text-red-600">{selectedDoctorStats.cancelled}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 
                 <div className="overflow-x-auto">
                   <Table>
@@ -438,26 +574,39 @@ const AdminDashboard = () => {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {appointments.map((appointment, index) => (
-                        <TableRow key={index}>
-                          <TableCell>{appointment.patientName}</TableCell>
-                          <TableCell>{appointment.doctorName}</TableCell>
-                          <TableCell>{appointment.checkup}</TableCell>
-                          <TableCell>{appointment.date}</TableCell>
-                          <TableCell>{appointment.time}</TableCell>
-                          <TableCell>
-                            <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                              appointment.status === 'Completed' ? 'bg-green-100 text-green-800' : 
-                              appointment.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 
-                              'bg-red-100 text-red-800'
-                            }`}>
-                              {appointment.status}
-                            </span>
+                      {filteredAppointments.length > 0 ? (
+                        filteredAppointments.map((appointment, index) => (
+                          <TableRow key={index}>
+                            <TableCell>{appointment.patientName}</TableCell>
+                            <TableCell>{appointment.doctorName}</TableCell>
+                            <TableCell>{appointment.checkup}</TableCell>
+                            <TableCell>{appointment.date}</TableCell>
+                            <TableCell>{appointment.time}</TableCell>
+                            <TableCell>
+                              <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                                appointment.status === 'Completed' ? 'bg-green-100 text-green-800' : 
+                                appointment.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 
+                                'bg-red-100 text-red-800'
+                              }`}>
+                                {appointment.status}
+                              </span>
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      ) : (
+                        <TableRow>
+                          <TableCell colSpan={6} className="text-center py-8 text-gray-500">
+                            No appointments found matching your filters
                           </TableCell>
                         </TableRow>
-                      ))}
+                      )}
                     </TableBody>
                   </Table>
+                </div>
+                
+                {/* Results count */}
+                <div className="mt-4 text-sm text-gray-500">
+                  Showing {filteredAppointments.length} of {appointments.length} appointments
                 </div>
               </CardContent>
             </Card>

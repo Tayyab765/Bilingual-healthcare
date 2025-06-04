@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Search, Bell, MessageSquare, User, LogOut } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Link, useNavigate } from 'react-router-dom';
@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/sheet";
 import { Badge } from './ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { useToast } from '@/hooks/use-toast';
 
 const Header = () => {
   const isMobile = useIsMobile();
@@ -32,6 +33,12 @@ const Header = () => {
   const navigate = useNavigate();
   const [unreadMessages, setUnreadMessages] = useState(5);
   const [unreadNotifications, setUnreadNotifications] = useState(3);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
+  
+  // Detect if user is a doctor based on localStorage
+  const isDoctor = localStorage.getItem('isDoctor') === 'true';
   
   useEffect(() => {
     const loggedIn = localStorage.getItem('isLoggedIn') === 'true';
@@ -46,10 +53,19 @@ const Header = () => {
   }, []);
   
   const handleLogout = () => {
+    // Clear user data from localStorage
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('userEmail');
     localStorage.removeItem('userName');
+    localStorage.removeItem('isDoctor');
     setIsLoggedIn(false);
+    
+    toast({
+      title: "Logged out successfully",
+      description: "You have been logged out of your account.",
+    });
+    
+    // Redirect to home page
     navigate('/');
   };
 
@@ -85,6 +101,30 @@ const Header = () => {
 
   const markAllNotificationsAsRead = () => {
     setUnreadNotifications(0);
+  };
+  
+  // Handle click outside dropdown to close it
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowDropdown(false);
+      }
+    };
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  // Navigate to appropriate settings page based on user type
+  const handleSettingsClick = () => {
+    if (isDoctor) {
+      navigate('/doctor/settings');
+    } else {
+      navigate('/settings');
+    }
+    setShowDropdown(false);
   };
   
   return (

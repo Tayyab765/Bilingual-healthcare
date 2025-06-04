@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -47,6 +46,22 @@ const DoctorProfileSetup = () => {
   const [practiceAddress, setPracticeAddress] = useState('');
   const [affiliation, setAffiliation] = useState('');
   
+  // Add this new state to manage time slots
+  const [timeSlots] = useState([
+    '08:00 - 09:00', 
+    '09:00 - 10:00', 
+    '10:00 - 11:00', 
+    '11:00 - 12:00',
+    '12:00 - 13:00',
+    '13:00 - 14:00',
+    '14:00 - 15:00',
+    '15:00 - 16:00',
+    '16:00 - 17:00',
+    '17:00 - 18:00',
+    '18:00 - 19:00',
+    '19:00 - 20:00',
+  ]);
+  
   // Availability
   const [availableDays, setAvailableDays] = useState<{day: string, selected: boolean, slots: string[]}[]>([
     { day: 'Monday', selected: false, slots: [] },
@@ -81,19 +96,35 @@ const DoctorProfileSetup = () => {
     setLanguages(newLanguages);
   };
   
+  // Replace the handleDayToggle function
   const handleDayToggle = (index: number) => {
     const newAvailableDays = [...availableDays];
     newAvailableDays[index].selected = !newAvailableDays[index].selected;
     if (newAvailableDays[index].selected && newAvailableDays[index].slots.length === 0) {
-      // Add default slots when a day is selected
-      newAvailableDays[index].slots = ['09:00 - 12:00', '14:00 - 17:00'];
+      // Don't add default slots anymore as we'll select them from dropdown
+      newAvailableDays[index].slots = [];
     }
     setAvailableDays(newAvailableDays);
   };
   
-  const handleSlotsChange = (dayIndex: number, value: string) => {
+  // Replace the handleSlotsChange function with one that handles adding/removing individual slots
+  const handleSlotToggle = (dayIndex: number, slot: string) => {
     const newAvailableDays = [...availableDays];
-    newAvailableDays[dayIndex].slots = value.split(',').map(slot => slot.trim());
+    const currentSlots = newAvailableDays[dayIndex].slots;
+    
+    if (currentSlots.includes(slot)) {
+      // Remove the slot if already selected
+      newAvailableDays[dayIndex].slots = currentSlots.filter(s => s !== slot);
+    } else {
+      // Add the slot if not already selected
+      newAvailableDays[dayIndex].slots = [...currentSlots, slot].sort((a, b) => {
+        // Sort slots by start time
+        const aStart = parseInt(a.split(' - ')[0].split(':')[0]);
+        const bStart = parseInt(b.split(' - ')[0].split(':')[0]);
+        return aStart - bStart;
+      });
+    }
+    
     setAvailableDays(newAvailableDays);
   };
   
@@ -416,15 +447,31 @@ const DoctorProfileSetup = () => {
                           
                           {day.selected && (
                             <div className="ml-7">
-                              <Label htmlFor={`slots-${index}`} className="text-sm mb-1 block">
-                                Time slots (e.g., 09:00 - 12:00, 14:00 - 17:00)
+                              <Label className="text-sm mb-2 block">
+                                Select available time slots
                               </Label>
-                              <Input
-                                id={`slots-${index}`}
-                                placeholder="Enter time slots separated by commas"
-                                value={day.slots.join(', ')}
-                                onChange={(e) => handleSlotsChange(index, e.target.value)}
-                              />
+                              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 mt-2">
+                                {timeSlots.map((slot) => (
+                                  <div key={`${day.day}-${slot}`} className="flex items-center space-x-2">
+                                    <Checkbox
+                                      id={`${day.day}-${slot}`}
+                                      checked={day.slots.includes(slot)}
+                                      onCheckedChange={() => handleSlotToggle(index, slot)}
+                                    />
+                                    <Label 
+                                      htmlFor={`${day.day}-${slot}`}
+                                      className="text-sm font-medium leading-none cursor-pointer"
+                                    >
+                                      {slot}
+                                    </Label>
+                                  </div>
+                                ))}
+                              </div>
+                              {day.slots.length === 0 && (
+                                <p className="text-sm text-amber-600 mt-2">
+                                  Please select at least one time slot
+                                </p>
+                              )}
                             </div>
                           )}
                         </div>
