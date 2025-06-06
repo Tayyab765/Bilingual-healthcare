@@ -6,16 +6,6 @@ import { Input } from '@/components/ui/input';
 import Logo from '@/components/Logo';
 import { useIsMobile } from '@/hooks/use-mobile';
 import LanguageToggle from '@/components/LanguageToggle';
-import { 
-  Fever, 
-  HeartAttack, 
-  Pregnancy, 
-  Breathlessness, 
-  Diarrhea, 
-  Hairfall, 
-  HighBloodPressure 
-} from '@/components/SymptomIcons';
-
 const Header = () => {
   const isMobile = useIsMobile();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -76,7 +66,7 @@ const LandingPage = () => {
       description: 'Verified Healthcare Professionals',
       icon: <Video className="h-6 w-6 text-healthcare-primary" />,
       bgColor: 'bg-blue-50',
-      link: '/video-consultation' // Updated link to new page
+      link: '/video-consultation'
     },
     {
       title: 'In-clinic Visit',
@@ -84,36 +74,29 @@ const LandingPage = () => {
       icon: <MapPin className="h-6 w-6 text-healthcare-primary" />,
       bgColor: 'bg-orange-50',
       link: '/appointments'
-    },
-    {
-      title: 'Instant Doctor',
-      description: 'Get Instant Relief in a Click',
-      icon: <Heart className="h-6 w-6 text-healthcare-primary" />,
-      bgColor: 'bg-green-50',
-      link: '/chat'
     }
   ];
 
   const symptoms = [
-    { name: 'Fever', icon: <Fever /> },
-    { name: 'Heart attack', icon: <HeartAttack /> },
-    { name: 'Pregnancy', icon: <Pregnancy /> },
-    { name: 'High blood pressure', icon: <HighBloodPressure /> },
-    { name: 'Breathlessness', icon: <Breathlessness /> },
-    { name: 'Diarrhea', icon: <Diarrhea /> },
-    { name: 'Hairfall', icon: <Hairfall /> },
-    { name: 'Anxiety/Depression', icon: <div className="symptom-icon">😔</div> },
+    { name: 'Fever', image: '/typhoid-fever.png' },
+    { name: 'Heart attack', image: '/heart.png' },
+    { name: 'Pregnancy', image: '/pregrent.png' },
+    { name: 'High blood pressure', image: '/blood-pressure.png' },
+    { name: 'Breathlessness', image: '/breathlessness.png' },
+    { name: 'Diarrhea', image: '/diarrea.png' },
+    { name: 'Hairfall', image: '/hairfall.png' },
+    { name: 'Anxiety/Depression', image: '/anxiety.png' },
   ];
 
   const diseases = [
-    { name: 'Dengue fever', icon: '🦟' },
-    { name: 'Typhoid Fever', icon: '🤒' },
-    { name: 'Piles', icon: '💊' },
-    { name: 'Gastritis', icon: '🧍' },
-    { name: 'Hernia', icon: '⚕️' },
-    { name: 'Vaginal Infection', icon: '🌷' },
-    { name: 'Migraine', icon: '🤯' },
-    { name: 'TB', icon: '🫁' },
+    { name: 'Dengue fever', image: '/dengue-fever.png' },
+    { name: 'Typhoid Fever', image: '/typhoid-fever.png' },
+    { name: 'Piles', image: '/piles.png' },
+    { name: 'Gastritis', image: '/gastritis.png' },
+    { name: 'Dentistry', image: '/th.png' },
+    { name: 'Vaginal Infection', image: '/vaginalinfection.png' },
+    { name: 'Migraine', image: '/migrain.png' },
+    { name: 'TB', image: '/tb.png' },
   ];
 
   const testimonials = [
@@ -169,17 +152,24 @@ const LandingPage = () => {
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                   <MapPin className="h-4 w-4 text-gray-400" />
                 </div>
-                <select 
-                  className="bg-white border border-gray-200 text-gray-700 py-3 px-4 pl-10 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-healthcare-primary"
+                <Input
+                  type="text"
+                  placeholder="Enter City"
+                  list="city-options"
                   value={searchLocation}
                   onChange={(e) => setSearchLocation(e.target.value)}
-                >
-                  <option value="">Enter City</option>
-                  <option value="New York">New York</option>
-                  <option value="Los Angeles">Los Angeles</option>
-                  <option value="Chicago">Chicago</option>
-                  <option value="Houston">Houston</option>
-                </select>
+                  className="bg-white border border-gray-200 text-gray-700 py-3 px-4 pl-10 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-healthcare-primary"
+                />
+                <datalist id="city-options">
+                  <option value="New York" />
+                  <option value="Los Angeles" />
+                  <option value="Chicago" />
+                  <option value="Houston" />
+                  <option value="Phoenix" />
+                  <option value="Philadelphia" />
+                  <option value="San Antonio" />
+                  <option value="San Diego" />
+                </datalist>
               </div>
               
               <div className="relative flex-1">
@@ -191,11 +181,11 @@ const LandingPage = () => {
                   placeholder="Search by Symptoms"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="py-3 pl-10 rounded-lg border border-gray-200 focus:ring-2 focus:ring-healthcare-primary"
+                  className="w-full py-3 px-4 pl-10 rounded-lg border border-gray-200 focus:ring-2 focus:ring-healthcare-primary"
                 />
                 <Button 
                   type="submit" 
-                  className="absolute right-1 top-1 bottom-1 bg-healthcare-primary hover:bg-healthcare-secondary rounded-lg text-white"
+                  className="absolute right-1 top-1 bottom-1 bg-healthcare-primary hover:bg-healthcare-secondary rounded-lg text-white px-3"
                 >
                   <Search className="h-4 w-4" />
                 </Button>
@@ -209,89 +199,40 @@ const LandingPage = () => {
               How can we help you today?
             </h2>
             
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="flex flex-col sm:flex-row gap-6 max-w-6xl mx-auto">
               {serviceCards.map((card, index) => (
                 <Link
                   key={index}
                   to={card.link}
-                  className={`${card.bgColor} rounded-lg p-4 flex flex-col hover:shadow-md transition-shadow h-52 ${
-                    index === 2 ? 'sm:col-span-1 md:col-span-1' : 'max-w-[250px]'
-                  }`}
+                  className={`${card.bgColor} rounded-lg p-6 flex flex-col hover:shadow-lg transition-all h-64 w-full sm:w-1/2`}
                 >
                   <div className="flex justify-between items-center mb-4">
                     <div className="w-full">
-                      <h3 className={`font-medium ${index === 0 ? 'text-navy-800' : 'text-gray-800'}`}>
+                      <h3 className={`text-lg font-medium ${index === 0 ? 'text-navy-800' : 'text-gray-800'}`}>
                         {card.title}
                       </h3>
                       <p className="text-sm text-gray-600">{card.description}</p>
                     </div>
-                    {/* Icon removed */}
                   </div>
                   
                   <div className="flex-grow flex items-center justify-center">
                     {index === 0 && (
                       <img 
-                        src="/doctor.svg" 
+                        src="/videoconsultation.png" 
                         alt="Doctor with thumbs up" 
-                        className="h-32 w-auto"
+                        className="h-40 w-auto" 
                       />
                     )}
                     {index === 1 && (
                       <img 
-                        src="/doctor.svg" 
+                        src="/clinic.png" 
                         alt="Doctor in clinic" 
-                        className="h-24 ml-auto"
-                      />
-                    )}
-                    {index === 2 && (
-                      <img 
-                        src="/doctor.svg" 
-                        alt="Doctor on call" 
-                        className="h-24 ml-auto"
+                        className="h-40 w-auto"
                       />
                     )}
                   </div>
                 </Link>
               ))}
-            </div>
-          </div>
-          
-
-          
-          {/* Medical advice section */}
-          <div className="mt-10 bg-green-50 rounded-lg p-6 flex flex-col md:flex-row gap-6 items-center">
-            <div className="flex-1">
-              <h2 className="text-xl font-semibold mb-4 bg-gradient-to-r from-green-500 to-teal-400 bg-clip-text text-transparent">
-                Get free medical advice by asking a doctor
-              </h2>
-              
-              <ul className="space-y-2 mb-6">
-                <li className="flex items-center gap-2">
-                  <span className="text-healthcare-primary">✓</span>
-                  <span>Ask a question anonymously</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="text-healthcare-primary">✓</span>
-                  <span>Get a reply from verified doctors</span>
-                </li>
-              </ul>
-              
-              <div className="flex gap-3 flex-wrap">
-                <Button variant="outline" className="bg-white rounded-md">
-                  View All Questions
-                </Button>
-                <Button className="bg-healthcare-primary hover:bg-healthcare-secondary rounded-md">
-                  Ask a Question
-                </Button>
-              </div>
-            </div>
-            
-            <div className="hidden md:block">
-              <img 
-                src="/placeholder.svg" 
-                alt="Doctor providing advice" 
-                className="h-40"
-              />
             </div>
           </div>
         </section>
@@ -300,17 +241,20 @@ const LandingPage = () => {
         <section className="py-8 px-4 sm:px-6 max-w-7xl mx-auto mb-10">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-semibold text-gray-900">Symptoms</h2>
-            <Link to="/symptoms" className="flex items-center text-healthcare-primary hover:underline">
-              <span>View all</span>
-              <ChevronRight className="h-4 w-4" />
-            </Link>
           </div>
           
           <div className="grid grid-cols-4 sm:grid-cols-8 gap-4">
             {symptoms.map((symptom, index) => (
               <div key={index} className="flex flex-col items-center">
-                <div className="w-16 h-16 rounded-full bg-healthcare-light flex items-center justify-center mb-2">
-                  {symptom.icon}
+                <div className="w-16 h-16 rounded-full overflow-hidden mb-2">
+                  <img 
+                    src={symptom.image} 
+                    alt={symptom.name} 
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = '/placeholder.svg'; // Fallback image
+                    }}
+                  />
                 </div>
                 <span className="text-xs text-center">{symptom.name}</span>
               </div>
@@ -322,17 +266,20 @@ const LandingPage = () => {
         <section className="py-8 px-4 sm:px-6 max-w-7xl mx-auto mb-10">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-semibold text-gray-900">Diseases</h2>
-            <Link to="/diseases" className="flex items-center text-healthcare-primary hover:underline">
-              <span>View all</span>
-              <ChevronRight className="h-4 w-4" />
-            </Link>
           </div>
           
           <div className="grid grid-cols-4 sm:grid-cols-8 gap-4">
             {diseases.map((disease, index) => (
               <div key={index} className="flex flex-col items-center">
-                <div className="w-16 h-16 rounded-full bg-healthcare-light flex items-center justify-center mb-2 text-2xl">
-                  {disease.icon}
+                <div className="w-16 h-16 rounded-full overflow-hidden mb-2">
+                  <img 
+                    src={disease.image} 
+                    alt={disease.name} 
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = '/placeholder.svg'; // Fallback image
+                    }}
+                  />
                 </div>
                 <span className="text-xs text-center">{disease.name}</span>
               </div>
